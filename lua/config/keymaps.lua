@@ -96,9 +96,11 @@ map("n", "H", "0", { desc = "goto line header" })
 map("n", "L", "$", { desc = "goto line end" })
 map("n", "W", "5w", { desc = "inline move fast" })
 map("n", "B", "5b", { desc = "inline back fast" })
+
 -- save and quit
 map("n", "S", "<cmd>w<CR>", { desc = "save file", remap = true })
 map("n", "Q", "<cmd>q<CR>", { desc = "quit", remap = true })
+map("n", "M", "lua vim.lsp.buf.hover", { desc = "Hover" })
 
 -- better indenting
 map("v", "<", "<gv")
