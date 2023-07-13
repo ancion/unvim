@@ -3,8 +3,7 @@ return {
   event = "VimEnter",
   cmd = "Telescope projects",
   config = function()
-    return {
-
+    require("project_nvim").setup({
       ---@usage set to true to disable setting the current-woriking directory
       --- Manual mode doesn't automatically change your root directory, so you have
       --- the option to manually do so using `:ProjectRoot` command.
@@ -46,6 +45,6 @@ return {
       ---@type string
       ---@usage path to store the project history for use in telescope
       datapath = vim.call("stdpath", "cache"),
-    }
+    })
   end,
 }
