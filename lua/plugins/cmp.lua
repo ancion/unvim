@@ -1,13 +1,26 @@
 local cmp_window = require("cmp.config.window")
 local cmp_mapping = require("cmp.config.mapping")
+local kinds = require("lazyvim.config").icons.kinds
 local status_cmp_ok, cmp_types = pcall(require, "cmp.types.cmp")
 if not status_cmp_ok then
   return
 end
 
 local SelectBehavior = cmp_types.SelectBehavior
--- CmpItemKind
--- CmpItemAbbr
+
+local source_names = {
+  nvim_lsp = "(LSP)",
+  emoji = "(Emoji)",
+  path = "(Path)",
+  calc = "(Calc)",
+  cmp_tabnine = "(Tabnine)",
+  vsnip = "(Snippet)",
+  luasnip = "(Snippet)",
+  buffer = "(Buffer)",
+  tmux = "(TMUX)",
+  copilot = "(Copilot)",
+  treesitter = "(TreeSitter)",
+}
 return {
   {
     "hrsh7th/nvim-cmp",
@@ -26,21 +39,14 @@ return {
         documentation = cmp_window.bordered(),
       },
       formatting = {
-        fields = { "menu", "kind", "abbr" },
+        fields = { "kind", "abbr", "menu" },
         max_width = 0,
-        source_names = {
-          nvim_lsp = "(LSP)",
-          emoji = "(Emoji)",
-          path = "(Path)",
-          calc = "(Calc)",
-          cmp_tabnine = "(Tabnine)",
-          vsnip = "(Snippet)",
-          luasnip = "(Snippet)",
-          buffer = "(Buffer)",
-          tmux = "(TMUX)",
-          copilot = "(Copilot)",
-          treesitter = "(TreeSitter)",
-        },
+        source_names = source_names,
+        format = function(entry, vim_item)
+          vim_item.kind = kinds[vim_item.kind]
+          vim_item.menu = source_names[entry.source.name]
+          return vim_item
+        end,
         duplicates = {
           buffer = 1,
           path = 1,
