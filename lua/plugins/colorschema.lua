@@ -16,6 +16,10 @@ return {
   {
     "theniceboy/nvim-deus",
     lazy = false,
+    config = function()
+      vim.cmd(string.format("highlight TelescopeSelection guibg=#44475a"))
+      vim.cmd(string.format("highlight WinSeparator guifg=#44475a"))
+    end,
   },
   {
     "catppuccin/nvim",
