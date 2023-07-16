@@ -1,9 +1,160 @@
+local Util = require("lazyvim.util")
+-- lazygit
+local lazygit = {
+  open_with_root_dir = function()
+    return Util.float_term({ "lazygit" }, { cwd = Util.get_root(), esc_esc = false, ctrl_hjkl = false })
+  end,
+  open_with_cwd = function()
+    return Util.float_term({ "lazygit" }, { esc_esc = false, ctrl_hjkl = false })
+  end,
+}
+
+-- floating terminal
+local lazyterm = function()
+  Util.float_term(nil, { cwd = Util.get_root() })
+end
+
+-- ui toggle
+local ui = {
+  toggle_format_on_save = function()
+    return require("lazyvim.plugins.lsp.format").toggle
+  end,
+  toggle_spell = function()
+    Util.toggle("spell")
+  end,
+  toggle_wrap = function()
+    Util.toggle("wrap")
+  end,
+  toggle_number = function()
+    Util.toggle("relativenumber", true)
+    Util.toggle("number")
+  end,
+  toggle_diagnostics = function()
+    return Util.toggle_diagnostics
+  end,
+  toggle_conceallevel = function()
+    local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
+    Util.toggle("conceallevel", false, { 0, conceallevel })
+  end,
+  toggle_inlay_hint = function()
+    vim.lsp.inlay_hint(0, nil)
+  end,
+  toggle_show_pos = function()
+    return vim.show_pos
+  end,
+}
+
+-- map("n", "<leader>ft", lazyterm, { desc = "Terminal (root dir)" })
+-- map("n", "<leader>fT", function() Util.float_term() end, { desc = "Terminal (cwd)" })
+local mode_nv = { "n", "v" }
+local mode_v = { "v" }
+local mode_i = { "i" }
+local nmappings = {
+  { from = "S",            to = ":w<CR>" },
+  { from = "Q",            to = ":q<CR>" },
+
+  -- Movement
+  { from = "J",            to = "5j",                                   mode = mode_nv },
+  { from = "K",            to = "5k",                                   mode = mode_nv },
+  { from = "W",            to = "5w",                                   mode = mode_nv },
+  { from = "E",            to = "5e",                                   mode = mode_nv },
+  { from = "H",            to = "0",                                    mode = mode_nv },
+  { from = "L",            to = "$",                                    mode = mode_nv },
+  { from = "M",            to = "lua vim.lsp.buf.hover",                mode = mode_nv },
+  { from = "<C-K>",        to = "5<C-y>",                               mode = mode_nv },
+  { from = "<C-J>",        to = "5<C-e>",                               mode = mode_nv },
+
+  -- move up down
+  { from = "<A-j>",        to = ":m '>+1<cr>gv=gv",                     mode = mode_v },
+  { from = "<A-k>",        to = ":m '<-2<cr>gv=gv",                     mode = mode_v },
+
+  -- indent
+  { from = "<",            to = "<gv",                                  mode = mode_v },
+  { from = ">",            to = ">gv",                                  mode = mode_v },
+
+  -- insert supet
+  { from = "<C-a>",        to = "<ESC>A",                               mode = mode_i },
+  { from = "<C-o>",        to = "<ESC>o",                               mode = mode_i },
+  { from = "<C-j>",        to = "pumvisible() ? '\\<C-n>' : '\\<C-j>'", mode = mode_i },
+  { from = "<C-k>",        to = "pumvisible() ? '\\<C-p>' : '\\<C-k>'", mode = mode_i },
+  { from = "jj",           to = "<ESC>",                                mode = mode_i },
+  { from = "jk",           to = "<ESC>",                                mode = mode_i },
+
+  -- Window & splits
+  { from = "<C-k>",        to = "<C-w>k" },
+  { from = "<C-j>",        to = "<C-w>j" },
+  { from = "<C-h>",        to = "<C-w>h" },
+  { from = "<C-l>",        to = "<C-w>l" },
+  { from = "<up>",         to = ":res +5<CR>" },
+  { from = "<down>",       to = ":res -5<CR>" },
+  { from = "<left>",       to = ":vertical resize-5<CR>" },
+  { from = "<right>",      to = ":vertical resize+5<CR>" },
+
+  -- Other
+  { from = "<leader>sw",   to = ":set wrap<CR>" },
+  { from = "<leader><CR>", to = ":nohlsearch<CR>" },
+  { from = "<leader>o",    to = "za" },
+  { from = "<leader>rc",   to = ":e ~/.config/nvim/init.lua<CR>" },
+
+  -- open app
+  { from = "<leader>gg",   to = lazygit.open_with_root_dir,             opts = { desc = "open lazygit with root" } },
+  { from = "<leader>gG",   to = lazygit.open_with_cwd,                  opts = { desc = "open lazygit with cwd" } },
+
+  -- float terminal
+  { from = "<A-1>",        to = lazyterm,                               opts = { desc = "open float terminal" } },
+  { from = "<A-2>",        to = lazyterm,                               opts = { desc = "open float terminal" } },
+
+  -- useful action
+  { from = "<leader>bb",   to = "<cmd>e #<cr>" },
+  { from = "\\s",          to = ":%s//g<left><left>" },
+
+  -- quickfix navigator
+  { from = "<leader>xl",   to = "<cmd>lopen<cr>" },
+  { from = "<leader>xq",   to = "<cmd>copen<cr>" },
+
+  -- quit
+  { from = "<leader>qq",   to = "<cmd>qa<cr>" },
+
+  -- ui toggle
+  { from = "<leader>uf",   to = ui.toggle_format_on_save,               opts = { desc = "toggle format save" } },
+  { from = "<leader>us",   to = ui.toggle_spell,                        opts = { desc = "toggle word spell" } },
+  { from = "<leader>uw",   to = ui.toggle_wrap,                         opts = { desc = "toggle line wrap" } },
+  { from = "<leader>ul",   to = ui.toggle_number,                       opts = { desc = "toggle line number" } },
+  { from = "<leader>ud",   to = ui.toggle_diagnostics,                  opts = { desc = "toggle diagnostics" } },
+  { from = "<leader>uc",   to = ui.toggle_conceallevel,                 opts = { desc = "toggle conceallevel" } },
+  { from = "<leader>uh",   to = ui.toggle_inlay_hint,                   opts = { desc = "toggle inlay hint" } },
+  { from = "<leader>ui",   to = ui.toggle_show_pos,                     opts = { desc = "show postion" } },
+  { from = "<leader>ua",   to = "<cmd>Alpha<cr>",                       opts = { desc = "show home page" } },
+  {
+    from = "<leader>ur",
+    to = "<cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><cr>",
+    opts = { desc = "Redraw/clear hlsearch / diff update" },
+  },
+}
+
+for _, mapping in ipairs(nmappings) do
+  local opts = mapping.opts or { noremap = true }
+  vim.keymap.set(mapping.mode or "n", mapping.from, mapping.to, opts)
+end
+
+local function run_vim_shortcut(shortcut)
+  local escaped_shortcut = vim.api.nvim_replace_termcodes(shortcut, true, false, true)
+  vim.api.nvim_feedkeys(escaped_shortcut, "n", true)
+end
+
+-- close win below
+vim.keymap.set("n", "<leader>q", function()
+  vim.cmd("TroubleClose")
+  local wins = vim.api.nvim_tabpage_list_wins(0)
+  if #wins > 1 then
+    run_vim_shortcut([[<C-w>j:q<CR>]])
+  end
+end, { noremap = true, silent = true })
+
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 -- This file is automatically loaded by lazyvim.config.init
-local Util = require("lazyvim.util")
-
 local function map(mode, lhs, rhs, opts)
   local keys = require("lazy.core.handler").handlers.keys
   ---@cast keys LazyKeysHandler
@@ -22,48 +173,17 @@ end
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 
--- Move to window using the <ctrl> hjkl keys
-map("n", "<C-h>", "<C-w>h", { desc = "Go to left window", remap = true })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window", remap = true })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window", remap = true })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to right window", remap = true })
-
--- Resize window using <ctrl> arrow keys
-map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
-map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
-map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
-map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
-
--- Move Lines
-map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
-map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
-
 -- buffers
 if Util.has("bufferline.nvim") then
-  map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
-  map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
-  map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
-  map("n", "]b", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+  map("n", "<A-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
+  map("n", "<A-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
 else
-  map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-  map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-  map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-  map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
+  map("n", "<A-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+  map("n", "<A-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 end
-map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
-map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 
 -- Clear search with <esc>
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
-
--- Clear search, diff update and redraw
--- taken from runtime/lua/_editor.lua
-map(
-  "n",
-  "<leader>ur",
-  "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
-  { desc = "Redraw / clear hlsearch / diff update" }
-)
 
 map({ "n", "x" }, "gw", "*N", { desc = "Search word under cursor" })
 
@@ -83,82 +203,10 @@ map("i", ";", ";<c-g>u")
 -- save file
 map({ "i", "v", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
-map("i", "jj", "<ESC>", { desc = "map jj to Escape" })
-map("i", "<C-o>", "<ESC>o", { desc = "move next line fast" })
-map("i", "<C-a>", "<ESC>A", { desc = "move end of line fast" })
-map({ "i", "n" }, "<C-j>", "pumvisible() ? '\\<C-n>' : '\\<C-j>'", { expr = true, silent = true })
-map({ "i", "n" }, "<C-k>", "pumvisible() ? '\\<C-p>' : '\\<C-k>'", { expr = true, silent = true })
-
--- fastMove
-map("n", "J", "5j", { desc = "J move cursor 5 line down" })
-map("n", "K", "5k", { desc = "K move cursor 5 line up" })
-map("n", "H", "0", { desc = "goto line header" })
-map("n", "L", "$", { desc = "goto line end" })
-map("n", "W", "5w", { desc = "inline move fast" })
-map("n", "B", "5b", { desc = "inline back fast" })
-
--- save and quit
-map("n", "S", "<cmd>w<CR>", { desc = "save file", remap = true })
-map("n", "Q", "<cmd>q<CR>", { desc = "quit", remap = true })
-map("n", "M", "lua vim.lsp.buf.hover", { desc = "Hover" })
-
--- better indenting
-map("v", "<", "<gv")
-map("v", ">", ">gv")
-
--- lazy
-map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
-
--- new file
-map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
-
-map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
-map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
-
 if not Util.has("trouble.nvim") then
   map("n", "[q", vim.cmd.cprev, { desc = "Previous quickfix" })
   map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
 end
-
--- stylua: ignore start
-
--- toggle options
-map("n", "<leader>uf", require("lazyvim.plugins.lsp.format").toggle, { desc = "Toggle format on Save" })
-map("n", "<leader>us", function() Util.toggle("spell") end, { desc = "Toggle Spelling" })
-map("n", "<leader>uw", function() Util.toggle("wrap") end, { desc = "Toggle Word Wrap" })
-map("n", "<leader>ul", function()
-  Util.toggle("relativenumber", true)
-  Util.toggle("number")
-end, { desc = "Toggle Line Numbers" })
-map("n", "<leader>ud", Util.toggle_diagnostics, { desc = "Toggle Diagnostics" })
-local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
-map("n", "<leader>uc", function() Util.toggle("conceallevel", false, { 0, conceallevel }) end,
-  { desc = "Toggle Conceal" })
-if vim.lsp.inlay_hint then
-  map("n", "<leader>uh", function() vim.lsp.inlay_hint(0, nil) end, { desc = "Toggle Inlay Hints" })
-end
-
--- lazygit
-map("n", "<leader>gg",
-  function() Util.float_term({ "lazygit" }, { cwd = Util.get_root(), esc_esc = false, ctrl_hjkl = false }) end,
-  { desc = "Lazygit (root dir)" })
-map("n", "<leader>gG", function() Util.float_term({ "lazygit" }, { esc_esc = false, ctrl_hjkl = false }) end,
-  { desc = "Lazygit (cwd)" })
-
--- quit
-map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
-
--- highlights under cursor
-if vim.fn.has("nvim-0.9.0") == 1 then
-  map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
-end
-
--- floating terminal
-local lazyterm = function() Util.float_term(nil, { cwd = Util.get_root() }) end
-map("n", "<leader>ft", lazyterm, { desc = "Terminal (root dir)" })
-map("n", "<leader>fT", function() Util.float_term() end, { desc = "Terminal (cwd)" })
-map("n", "<c-/>", lazyterm, { desc = "Terminal (root dir)" })
-map("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
 
 -- Terminal Mappings
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
@@ -166,16 +214,8 @@ map("t", "<C-h>", "<cmd>wincmd h<cr>", { desc = "Go to left window" })
 map("t", "<C-j>", "<cmd>wincmd j<cr>", { desc = "Go to lower window" })
 map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
 map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
-map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
-map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
-
--- windows
-map("n", "<leader>ww", "<C-W>p", { desc = "Other window", remap = true })
-map("n", "<leader>wd", "<C-W>c", { desc = "Delete window", remap = true })
-map("n", "<leader>w-", "<C-W>s", { desc = "Split window below", remap = true })
-map("n", "<leader>w|", "<C-W>v", { desc = "Split window right", remap = true })
-map("n", "<leader>-", "<C-W>s", { desc = "Split window below", remap = true })
-map("n", "<leader>|", "<C-W>v", { desc = "Split window right", remap = true })
+map("t", "<A-1>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+map("t", "<A-2>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- tabs
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
