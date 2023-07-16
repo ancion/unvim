@@ -222,7 +222,6 @@ return {
         Value = "",
         Variable = "",
       },
-      -- icons = require("lazyvim.config").icons.kinds,
       lsp = {
         auto_attach = false,
         preference = nil,
