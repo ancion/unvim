@@ -27,12 +27,12 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "deus", "tokyonight", "habamax" } },
-  checker = { enabled = true }, -- automatically check for plugin updates
+  install = { colorscheme = { "tokyonight", "habamax" } },
+  checker = { enabled = false }, -- automatically check for plugin updates
   ui = {
     check_outdated_packages_on_open = true,
     width = 0.8,
-    height = 0.9,
+    height = 0.8,
     border = "rounded",
     keymaps = {
       toggle_package_expand = "<CR>",
