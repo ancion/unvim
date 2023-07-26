@@ -42,7 +42,7 @@ local footer = {
 return {
   {
     "goolord/alpha-nvim",
-    dependency = {
+    dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
     event = "VimEnter",

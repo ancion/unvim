@@ -1,6 +1,6 @@
 local cmp_window = require("cmp.config.window")
 local cmp_mapping = require("cmp.config.mapping")
-local kinds = require("lazyvim.config").icons.kinds
+local icons = require("config.icons")
 local status_cmp_ok, cmp_types = pcall(require, "cmp.types.cmp")
 if not status_cmp_ok then
   return
@@ -43,7 +43,7 @@ return {
         max_width = 0,
         source_names = source_names,
         format = function(entry, vim_item)
-          vim_item.kind = kinds[vim_item.kind]
+          vim_item.kind = icons.kinds[vim_item.kind]
           vim_item.menu = source_names[entry.source.name]
           return vim_item
         end,

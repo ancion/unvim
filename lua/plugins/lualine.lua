@@ -12,7 +12,7 @@ return {
   "nvim-lualine/lualine.nvim",
   event = "VeryLazy",
   opts = function()
-    local icons = require("lazyvim.config").icons
+    local icons = require("config.icons")
     local Util = require("lazyvim.util")
     return {
       options = {
@@ -24,7 +24,7 @@ return {
         lualine_a = {
           {
             "branch",
-            icon = "",
+            icon = icons.git.branch,
           },
           {
             "mode",
@@ -38,23 +38,27 @@ return {
           {
             "diagnostics",
             symbols = {
-              error = " ",
-              warn = " ",
-              info = " ",
-              hint = "󰫢 ",
+              error = icons.diagnostics.error .. " ",
+              warn = icons.diagnostics.warn .. " ",
+              info = icons.diagnostics.info .. " ",
+              hint = icons.diagnostics.hint .. " ",
             },
           },
         },
         lualine_c = {
-          { "filename", path = 1, symbols = { modified = "  ", readonly = "  ", unnamed = " 󰑷 " } },
+          {
+            "filename",
+            path = 1,
+            symbols = {
+              modified = " " .. icons.file.state_mod .. " ",
+              readonly = " " .. icons.file.state_readonly .. " ",
+              unnamed = " " .. icons.file.self .. " ",
+            },
+          },
           {
             "diff",
             source = diff_source,
-            symbols = {
-              added = "+",
-              modified = "~",
-              removed = "-",
-            },
+            symbols = icons.diff,
             padding = { left = 2, right = 1 },
             color = {},
             cond = nil,
@@ -75,7 +79,7 @@ return {
           },
           -- stylua: ignore
           {
-            function() return "  " .. require("dap").status() end,
+            function() return icons.debug.breakpoints .. icons.separator.space .. require("dap").status() end,
             cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
             color = Util.fg("Debug"),
           },

@@ -2,12 +2,12 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "deus",
+      colorscheme = "dracula",
     },
   },
   {
     "Mofiqul/dracula.nvim",
-    lazy = true,
+    lazy = false,
   },
   {
     "overcache/NeoSolarized",
@@ -15,7 +15,7 @@ return {
   },
   {
     "theniceboy/nvim-deus",
-    lazy = false,
+    lazy = true,
     config = function()
       vim.cmd(string.format("highlight TelescopeSelection guibg=#44475a"))
       vim.cmd(string.format("highlight WinSeparator guifg=#44475a"))
@@ -24,7 +24,7 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = false,
+    lazy = true,
     config = function()
       vim.g.catppuccin_flavour = "mocha"
     end,

@@ -1,13 +1,13 @@
 local function is_ft(b, ft)
   return vim.bo[b].filetype == ft
 end
-
+local icons = require("config.icons")
 local function diagnostics_indicator(num, _, diagnostics, _)
   local result = {}
   local symbols = {
-    error = "",
-    warning = "",
-    info = "",
+    error = icons.diagnostics.error,
+    warning = icons.diagnostics.warn,
+    info = icons.diagnostics.info,
   }
   for name, count in pairs(diagnostics) do
     if symbols[name] and count > 0 then
@@ -55,7 +55,7 @@ return {
         left_mouse_command = "buffer %d", -- can be a string | function, see "Mouse actions"
         middle_mouse_command = nil, -- can be a string | function, see "Mouse actions"
         indicator = {
-          icon = "▎",
+          icon = icons.separator.bold_left_line,
           style = "icon", -- can also be 'underline'|'none',
         },
         --- name_formatter can be used to change the buffer's label in the bufferline.

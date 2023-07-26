@@ -25,6 +25,7 @@ local filetype_exclude = {
   "neotest-summary",
   "",
 }
+local icons = require("config.icons")
 
 local function isempty(s)
   return s == nil or s == ""
@@ -49,7 +50,7 @@ local get_filename = function()
       file_icon, hl_group = devicons.get_icon(filename, extension, { default = true })
 
       if isempty(file_icon) then
-        file_icon = "󰑷 "
+        file_icon = icons.file.self .. " "
       end
     else
       file_icon = ""
@@ -59,19 +60,19 @@ local get_filename = function()
     local buf_ft = vim.bo.filetype
 
     if buf_ft == "dapui_breakpoints" then
-      file_icon = " "
+      file_icon = icons.debug.breakpoints .. " "
     end
 
     if buf_ft == "dapui_stacks" then
-      file_icon = " "
+      file_icon = icons.debug.stacks .. " "
     end
 
     if buf_ft == "dapui_scopes" then
-      file_icon = "󰮄 "
+      file_icon = icons.debug.scopes .. " "
     end
 
     if buf_ft == "dapui_watches" then
-      file_icon = " "
+      file_icon = icons.debug.watches .. " "
     end
 
     -- if buf_ft == "dapui_console" then
@@ -101,7 +102,7 @@ local get_gps = function()
   end
 
   if not isempty(gps_location) then
-    return "%#NavicSeparator#" .. ">" .. "%* " .. gps_location
+    return "%#NavicSeparator#" .. icons.separator.right_arrow .. "%* " .. gps_location
   else
     return ""
   end
@@ -128,7 +129,7 @@ local get_winbar = function()
 
   if not isempty(value) and get_buf_option("mod") then
     -- TODO: replace with circle
-    local mod = "%#LspCodeLens#" .. "" .. "%*"
+    local mod = "%#LspCodeLens#" .. icons.file.state_mod .. "%*"
     if gps_added then
       value = value .. " " .. mod
     else
@@ -140,7 +141,7 @@ local get_winbar = function()
 
   if num_tabs > 1 and not isempty(value) then
     local tabpage_number = tostring(vim.api.nvim_tabpage_get_number(0))
-    value = value .. "%=" .. tabpage_number .. "/" .. tostring(num_tabs)
+    value = value .. "%=" .. tabpage_number .. icons.separator.slash .. tostring(num_tabs)
   end
 
   local status_ok, _ = pcall(vim.api.nvim_set_option_value, "winbar", value, { scope = "local" })
@@ -183,50 +184,15 @@ return {
   end,
   opts = function()
     return {
-      separator = " > ",
+      separator = icons.separator.space .. icons.separator.right_arrow .. icons.separator.space,
       highlight = true,
       depth_limit = 5,
-      icons = {
-        Array = "󰅪",
-        Boolean = "",
-        Class = "",
-        Color = "",
-        Constant = "",
-        Constructor = "",
-        Enum = "",
-        EnumMember = "",
-        Event = "",
-        Field = "",
-        File = "",
-        Folder = "",
-        Function = "󰡱",
-        Interface = "",
-        Key = "",
-        Keyword = "",
-        Method = "",
-        Module = "󰠲",
-        Namespace = "",
-        Null = "󰟢",
-        Number = "",
-        Object = "",
-        Operator = "",
-        Package = "",
-        Property = "",
-        Reference = "",
-        Snippet = "",
-        String = "",
-        Struct = "",
-        Text = "",
-        TypeParameter = "",
-        Unit = "",
-        Value = "",
-        Variable = "",
-      },
+      icons = icons.kinds,
       lsp = {
         auto_attach = false,
         preference = nil,
       },
-      depth_limit_indicator = "..",
+      depth_limit_indicator = icons.separator.limit,
       safe_output = true,
       lazy_update_context = false,
       click = false,
