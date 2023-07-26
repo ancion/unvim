@@ -63,8 +63,8 @@ local option = {
 }
 
 -- set option
-for opt, val in pairs(option) do
-  vim.opt[opt] = val
+for key, val in pairs(option) do
+  vim.opt[key] = val
 end
 
 vim.opt.shortmess:append({ W = true, I = true, c = true })
@@ -74,5 +74,12 @@ if vim.fn.has("nvim-0.9.0") == 1 then
   vim.opt.shortmess:append({ C = true })
 end
 
+if vim.fn.has("win32") or vim.fn.has("win64") then
+  vim.opt.shell = "powershell"
+  vim.opt.shellcmdflag =
+    "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+end
+
 -- Fix markdown indentation settings
+vim.g.markdown_recommended_style = 0
 vim.g.markdown_recommended_style = 0
