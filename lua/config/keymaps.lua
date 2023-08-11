@@ -101,8 +101,8 @@ local nmappings = {
   { from = "<leader>gG",   to = lazygit.open_with_cwd,                  opts = { desc = "open lazygit with cwd" } },
 
   -- float terminal
-  { from = "<A-1>",        to = lazyterm,                               opts = { desc = "open float terminal" } },
-  { from = "<A-2>",        to = lazyterm,                               opts = { desc = "open float terminal" } },
+  -- { from = "<A-1>",        to = lazyterm,                               opts = { desc = "open float terminal" } },
+  -- { from = "<A-2>",        to = lazyterm,                               opts = { desc = "open float terminal" } },
 
   -- useful action
   { from = "<leader>bb",   to = "<cmd>e #<cr>" },
@@ -214,8 +214,8 @@ map("t", "<C-h>", "<cmd>wincmd h<cr>", { desc = "Go to left window" })
 map("t", "<C-j>", "<cmd>wincmd j<cr>", { desc = "Go to lower window" })
 map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
 map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
-map("t", "<A-1>", "<cmd>close<cr>", { desc = "Hide Terminal" })
-map("t", "<A-2>", "<cmd>close<cr>", { desc = "which_key_ignore" })
+-- map("t", "<A-1>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+-- map("t", "<A-2>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- tabs
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
