@@ -28,4 +28,4 @@ local compileRun = function()
   end
 end
 
-vim.keymap.set("n", "<F58>", compileRun, { silent = true })
+vim.keymap.set("n", "<F10>", compileRun, { silent = true })
