@@ -74,11 +74,11 @@ if vim.fn.has("nvim-0.9.0") == 1 then
   vim.opt.shortmess:append({ C = true })
 end
 
-if vim.loop.os_uname().version:match("Windows") then
-  -- if vim.fn.has("powershell") == 1 then
-  vim.opt.shell = "pwsh.exe -NoLogo"
-  vim.opt.shellcmdflag =
-    "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+if vim.fn.has("win64") == 1 then
+  vim.opt.shell = "powershell.exe -NoLogo"
+  vim.opt.shellcmdflag = "-command"
+  vim.opt.shellquote = '"'
+  vim.opt.shellxquote = ""
 end
 
 -- Fix markdown indentation settings
